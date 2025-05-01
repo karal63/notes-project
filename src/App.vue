@@ -1,3 +1,7 @@
-<template>Hello world</template>
+<template>
+    <router-view />
+</template>
 
-<script></script>
+<script setup lang="ts">
+defineProps<{ msg: string }>();
+</script>
