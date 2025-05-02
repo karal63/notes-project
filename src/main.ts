@@ -5,9 +5,9 @@ import { createRouter, createWebHistory } from "vue-router";
 
 // components
 import App from "./App.vue";
-import SingleNote from "./pages/SingleNote.vue";
 import Home from "./pages/Home.vue";
-import NewNote from "./pages/newNote.vue";
+import NewNote from "./pages/NewNote.vue";
+import SingleNote from "./pages/SingleNote.vue";
 
 const pinia = createPinia();
 
@@ -16,7 +16,7 @@ const router = createRouter({
     routes: [
         { path: "/", component: Home },
         { path: "/new", component: NewNote },
-        { path: "/single", component: SingleNote },
+        { path: "/:id", component: SingleNote },
     ],
 });
 

@@ -20,7 +20,11 @@ export const useGlobalStore = defineStore("storeId", () => {
     const addNote = (newNote: any) => {
         notes.value = [...notes.value, { ...newNote, id: getNextId(notes) }];
         localStorage.setItem("NOTES", JSON.stringify(notes.value));
-        console.log(localStorage);
+    };
+
+    const deleteNote = (id?: number) => {
+        notes.value = notes.value.filter((note) => note.id !== id);
+        localStorage.setItem("NOTES", JSON.stringify(notes.value));
     };
 
     const getNextId = (items: any) => {
@@ -29,5 +33,5 @@ export const useGlobalStore = defineStore("storeId", () => {
             : 0;
     };
 
-    return { notes, addNote };
+    return { notes, addNote, deleteNote };
 });

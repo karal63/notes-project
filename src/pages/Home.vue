@@ -17,27 +17,7 @@
         </div>
     </div>
 
-    <div class="grid grid-cols-3 gap-4">
-        <div v-for="note in store.notes">
-            <div
-                class="h-[150px] border border-gray-300 rounded-md shadow-md hover:shadow-xl transition-all cursor-pointer p-4 flex flex-col justify-center items-center"
-            >
-                <h1 class="text-2xl font-semibold">
-                    {{ note.name }}
-                </h1>
-                <ul class="flex gap-1 mt-2">
-                    <li
-                        v-for="tag in note.tags"
-                        class="bg-blue-500 rounded-md px-2 text-sm py-1 text-white"
-                    >
-                        {{ tag.name }}
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <!-- <form class="flex gap-5" @submit.prevent="onSubmit">
+    <form class="flex gap-5">
         <div class="w-1/2">
             <label class="block pb-2 text-gray-500">Title</label>
             <input
@@ -59,7 +39,7 @@
                     >
                         {{ tag.name }}
                         <button
-                            @click="() => deleteExistingTag(tag.id)"
+                            @click="() => deleteTag(tag.id)"
                             class="text-lg"
                         >
                             &times;
@@ -82,28 +62,78 @@
 
                 <div
                     v-if="tagsDropListOpen"
-                    class="absolute top-[120%] left-0 w-full border border-gray-300"
+                    class="absolute top-[120%] left-0 w-full border border-gray-300 bg-white"
                 >
                     <button
-                        @click="tagName = 'React'"
+                        @click.prevent="tagName = 'React'"
                         class="flex justify-start w-full px-4 py-2 hover:bg-blue-100 cursor-pointer"
                     >
                         React
                     </button>
                     <button
                         class="flex justify-start w-full pl-4 py-2 hover:bg-blue-100 cursor-pointer"
-                        @click="addNewTag"
+                        @click.prevent="addTag"
                     >
                         Add "{{ tagName }}"
                     </button>
                 </div>
             </div>
         </div>
-    </form> -->
+    </form>
+
+    <div class="grid grid-cols-3 gap-4 mt-10">
+        <RouterLink :to="`/${note.id}`" v-for="note in store.notes">
+            <div
+                class="h-[150px] border border-gray-300 rounded-md shadow-md hover:shadow-xl transition-all cursor-pointer p-4 flex flex-col justify-center items-center"
+            >
+                <h1 class="text-2xl font-semibold">
+                    {{ note.name }}
+                </h1>
+                <ul class="flex gap-1 mt-2">
+                    <li
+                        v-for="tag in note.tags"
+                        class="bg-blue-500 rounded-md px-2 text-sm py-1 text-white"
+                    >
+                        {{ tag.name }}
+                    </li>
+                </ul>
+            </div>
+        </RouterLink>
+    </div>
 </template>
 
 <script setup lang="ts">
-import { watchEffect } from "vue";
+import { RouterLink } from "vue-router";
 import { useGlobalStore } from "../store";
+import { ref } from "vue";
+import type { Tag } from "../types";
 const store = useGlobalStore();
+
+const noteName = ref<string>("");
+const tags = ref<Tag[]>([]);
+const tagName = ref<string>("");
+
+const tagsDropListOpen = ref(false);
+
+const addTag = () => {
+    const maxIndex =
+        tags.value.length > 0
+            ? Math.max(...tags.value.map((tag: any) => tag.id)) + 1
+            : 0;
+
+    tags.value = [
+        ...tags.value,
+        {
+            name: tagName.value,
+            id: maxIndex,
+        },
+    ];
+
+    tagName.value = "";
+    tagsDropListOpen.value = false;
+};
+
+const deleteTag = (id: number) => {
+    tags.value = tags.value.filter((tag: any) => tag.id !== id);
+};
 </script>
