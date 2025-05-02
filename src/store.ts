@@ -3,16 +3,24 @@ import { ref } from "vue";
 import type { Note } from "./types";
 
 export const useGlobalStore = defineStore("storeId", () => {
-    const notes = ref<Note[]>([
-        {
-            name: "hello",
-            desc: "123",
-            tags: [{ id: 0, name: "React" }],
-            id: 0,
-        },
-    ]);
+    // make exactly this way because JSON.parse expects a string, so you need to convert you example array into json
+    const notes = ref<Note[]>(
+        JSON.parse(
+            localStorage.getItem("NOTES") ||
+                JSON.stringify([
+                    {
+                        name: "hello",
+                        desc: "123",
+                        tags: [{ id: 0, name: "React" }],
+                        id: 0,
+                    },
+                ])
+        ) as Note[]
+    );
     const addNote = (newNote: any) => {
         notes.value = [...notes.value, { ...newNote, id: getNextId(notes) }];
+        localStorage.setItem("NOTES", JSON.stringify(notes.value));
+        console.log(localStorage);
     };
 
     const getNextId = (items: any) => {

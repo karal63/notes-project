@@ -20,12 +20,12 @@
     <div class="grid grid-cols-3 gap-4">
         <div v-for="note in store.notes">
             <div
-                class="h-[150px] border border-gray-300 rounded-md shadow-md hover:shadow-xl transition-all cursor-pointer p-4"
+                class="h-[150px] border border-gray-300 rounded-md shadow-md hover:shadow-xl transition-all cursor-pointer p-4 flex flex-col justify-center items-center"
             >
                 <h1 class="text-2xl font-semibold">
                     {{ note.name }}
                 </h1>
-                <ul class="flex gap-3 mt-2">
+                <ul class="flex gap-1 mt-2">
                     <li
                         v-for="tag in note.tags"
                         class="bg-blue-500 rounded-md px-2 text-sm py-1 text-white"
