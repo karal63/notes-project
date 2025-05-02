@@ -17,6 +17,26 @@
         </div>
     </div>
 
+    <div class="grid grid-cols-3 gap-4">
+        <div v-for="note in store.notes">
+            <div
+                class="h-[150px] border border-gray-300 rounded-md shadow-md hover:shadow-xl transition-all cursor-pointer p-4"
+            >
+                <h1 class="text-2xl font-semibold">
+                    {{ note.name }}
+                </h1>
+                <ul class="flex gap-3 mt-2">
+                    <li
+                        v-for="tag in note.tags"
+                        class="bg-blue-500 rounded-md px-2 text-sm py-1 text-white"
+                    >
+                        {{ tag.name }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
     <!-- <form class="flex gap-5" @submit.prevent="onSubmit">
         <div class="w-1/2">
             <label class="block pb-2 text-gray-500">Title</label>
@@ -82,4 +102,8 @@
     </form> -->
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { watchEffect } from "vue";
+import { useGlobalStore } from "../store";
+const store = useGlobalStore();
+</script>

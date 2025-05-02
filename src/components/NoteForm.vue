@@ -22,7 +22,7 @@
                         >
                             {{ tag.name }}
                             <button
-                                @click="() => deleteExistingTag(tag.id)"
+                                @click.prevent="() => deleteExistingTag(tag.id)"
                                 class="text-lg"
                             >
                                 &times;
@@ -45,18 +45,18 @@
 
                     <div
                         v-if="tagsDropListOpen"
-                        class="absolute top-[120%] left-0 w-full border border-gray-300"
+                        class="absolute top-[120%] left-0 w-full border border-gray-300 bg-white"
                     >
                         <!-- show here all previously used list of tags -->
                         <button
-                            @click="tagName = 'React'"
+                            @click.prevent="tagName = 'React'"
                             class="flex justify-start w-full px-4 py-2 hover:bg-blue-100 cursor-pointer"
                         >
                             React
                         </button>
                         <button
+                            @click.prevent="addNewTag"
                             class="flex justify-start w-full pl-4 py-2 hover:bg-blue-100 cursor-pointer"
-                            @click="addNewTag"
                         >
                             Add "{{ tagName }}"
                         </button>
@@ -68,22 +68,25 @@
         <div class="flex flex-col mt-5">
             <label class="block pb-2 text-gray-500">Description</label>
             <textarea
+                v-model="noteDesc"
                 rows="10"
-                class="border border-gray-300 rounded-md outline-none"
+                class="border border-gray-300 rounded-md outline-none p-3"
             ></textarea>
         </div>
 
         <div class="flex justify-end gap-2 mt-5">
             <button
+                type="submit"
                 class="bg-blue-500 text-white px-5 py-1 rounded-md cursor-pointer"
             >
                 Create
             </button>
-            <button
+            <RouterLink
+                to="/"
                 class="px-5 py-1 rounded-md border border-gray-300 cursor-pointer"
             >
                 Cancel
-            </button>
+            </RouterLink>
         </div>
     </form>
 </template>
@@ -91,19 +94,30 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import type { Tag } from "../types";
+import { useGlobalStore } from "../store";
+import { useRouter } from "vue-router";
 
-defineProps<{ tags: Tag[] }>();
+const store = useGlobalStore();
+const router = useRouter();
+
+const props = defineProps<{ tags: Tag[] }>();
 const emit = defineEmits<{
     (e: "addTag", tagName: string): void;
     (e: "deleteTag", tagName: number): void;
 }>();
 
 const noteName = ref<string>("");
+const noteDesc = ref<string>("");
 const tagName = ref<string>("");
 const tagsDropListOpen = ref(false);
 
 const onSubmit = () => {
-    console.log("submittting");
+    store.addNote({
+        name: noteName.value,
+        desc: noteDesc.value,
+        tags: props.tags,
+    });
+    router.push("/");
 };
 
 const addNewTag = () => {
