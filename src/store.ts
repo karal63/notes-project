@@ -27,11 +27,25 @@ export const useGlobalStore = defineStore("storeId", () => {
         localStorage.setItem("NOTES", JSON.stringify(notes.value));
     };
 
+    const editNoteName = (id?: number, newName?: string) => {
+        notes.value = notes.value.map((note) => {
+            if (note.id === id) {
+                ``;
+                return {
+                    ...note,
+                    name: newName,
+                };
+            }
+            return note;
+        });
+        localStorage.setItem("NOTES", JSON.stringify(notes.value));
+    };
+
     const getNextId = (items: any) => {
         return items.value.length > 0
             ? Math.max(...items.value.map((item: any) => item.id)) + 1
             : 0;
     };
 
-    return { notes, addNote, deleteNote };
+    return { notes, addNote, deleteNote, editNoteName };
 });

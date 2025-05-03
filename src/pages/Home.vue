@@ -10,6 +10,7 @@
                 Create
             </RouterLink>
             <button
+                @click="modelOpen = true"
                 class="px-5 py-1 rounded-md border border-gray-300 cursor-pointer"
             >
                 Edit
@@ -100,6 +101,8 @@
             </div>
         </RouterLink>
     </div>
+
+    <Modal v-if="modelOpen" @hideModal="modelOpen = false" />
 </template>
 
 <script setup lang="ts">
@@ -107,6 +110,7 @@ import { RouterLink } from "vue-router";
 import { useGlobalStore } from "../store";
 import { ref } from "vue";
 import type { Tag } from "../types";
+import Modal from "../components/Modal.vue";
 const store = useGlobalStore();
 
 const noteName = ref<string>("");
@@ -114,6 +118,7 @@ const tags = ref<Tag[]>([]);
 const tagName = ref<string>("");
 
 const tagsDropListOpen = ref(false);
+const modelOpen = ref(false);
 
 const addTag = () => {
     const maxIndex =
