@@ -83,7 +83,7 @@
     </form>
 
     <div class="grid grid-cols-3 gap-4 mt-10">
-        <RouterLink :to="`/${note.id}`" v-for="note in store.notes">
+        <RouterLink :to="`/${note.id}`" v-for="note in sortedNotes">
             <div
                 class="h-[150px] border border-gray-300 rounded-md shadow-md hover:shadow-xl transition-all cursor-pointer p-4 flex flex-col justify-center items-center"
             >
@@ -108,8 +108,8 @@
 <script setup lang="ts">
 import { RouterLink } from "vue-router";
 import { useGlobalStore } from "../store";
-import { ref } from "vue";
-import type { Tag } from "../types";
+import { ref, watch, watchEffect } from "vue";
+import type { Note, Tag } from "../types";
 import Modal from "../components/Modal.vue";
 const store = useGlobalStore();
 
@@ -119,6 +119,8 @@ const tagName = ref<string>("");
 
 const tagsDropListOpen = ref(false);
 const modelOpen = ref(false);
+
+const sortedNotes = ref<Note[]>([...store.notes]);
 
 const addTag = () => {
     const maxIndex =
@@ -141,4 +143,30 @@ const addTag = () => {
 const deleteTag = (id: number) => {
     tags.value = tags.value.filter((tag: any) => tag.id !== id);
 };
+
+watch([noteName, tags], () => {
+    sortedNotes.value = store.notes.filter((note) => {
+        let titleMatch = true;
+        if (noteName.value.length !== 0) {
+            titleMatch = note.name
+                .toLowerCase()
+                .includes(noteName.value.toLowerCase());
+        }
+
+        let tagsMatch = true;
+        if (tags.value.length !== 0) {
+            tagsMatch =
+                tags.value.length > 0 &&
+                tags.value.every((selectedTag) =>
+                    note.tags.some(
+                        (noteTag) =>
+                            noteTag.name.toLowerCase() ===
+                            selectedTag.name.toLowerCase()
+                    )
+                );
+        }
+
+        return titleMatch && tagsMatch;
+    });
+});
 </script>
