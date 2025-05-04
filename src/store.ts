@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import type { Note } from "./types";
+import type { Note, Tag, editNoteProps } from "./types";
 
 export const useGlobalStore = defineStore("storeId", () => {
     // make exactly this way because JSON.parse expects a string, so you need to convert you example array into json
@@ -17,17 +17,20 @@ export const useGlobalStore = defineStore("storeId", () => {
                 ])
         ) as Note[]
     );
-    const addNote = (newNote: any) => {
-        notes.value = [...notes.value, { ...newNote, id: getNextId(notes) }];
+    const addNote = (newNote: Note) => {
+        notes.value = [
+            ...notes.value,
+            { ...newNote, id: getNextId(notes.value) },
+        ];
         localStorage.setItem("NOTES", JSON.stringify(notes.value));
     };
 
-    const deleteNote = (id?: number) => {
+    const deleteNote = (id: number) => {
         notes.value = notes.value.filter((note) => note.id !== id);
         localStorage.setItem("NOTES", JSON.stringify(notes.value));
     };
 
-    const editNoteName = (id?: number, newName?: string) => {
+    const editNoteName = ({ id, newName }: editNoteProps) => {
         notes.value = notes.value.map((note) => {
             if (note.id === id) {
                 ``;
@@ -41,9 +44,9 @@ export const useGlobalStore = defineStore("storeId", () => {
         localStorage.setItem("NOTES", JSON.stringify(notes.value));
     };
 
-    const getNextId = (items: any) => {
-        return items.value.length > 0
-            ? Math.max(...items.value.map((item: any) => item.id)) + 1
+    const getNextId = (items: Note[] | Tag[]) => {
+        return items.length > 0
+            ? Math.max(...items.map((item: any) => item.id)) + 1
             : 0;
     };
 

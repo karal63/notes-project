@@ -144,6 +144,10 @@ const deleteTag = (id: number) => {
     tags.value = tags.value.filter((tag: any) => tag.id !== id);
 };
 
+watchEffect(() => {
+    sortedNotes.value = store.notes;
+});
+
 watch([noteName, tags], () => {
     sortedNotes.value = store.notes.filter((note) => {
         let titleMatch = true;
